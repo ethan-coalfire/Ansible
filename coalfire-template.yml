@@ -1,0 +1,15 @@
+- name: maintain the vm templates
+  hosts: all
+  remote_user: ethan
+  roles:
+    - role: ubuntu-maintenence
+      vars:
+        server_hostname: 'template'
+        enable_ufw: false
+    - aws-cli
+    - az-cli
+    - gcloud-cli
+    - kubectl
+    - packer
+    - terraform
+    - 1password

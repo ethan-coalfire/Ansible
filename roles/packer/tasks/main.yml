@@ -1,0 +1,37 @@
+# install dependancies
+- name: Install dependancies
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - ca-certificates
+     - curl
+     - gnupg
+     - lsb-release
+     - python3-pip
+     - acl
+    state: present
+    update_cache: yes
+
+# download hashicorp key
+- name: download hashicorp key
+  become: yes
+  ansible.builtin.get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /etc/apt/keyrings/hashicorp.asc
+
+# add hashicorp repo with key
+- name: add hashicorp repo with key
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/hashicorp.asc] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+    state: present
+
+# install tools
+- name: Install tools
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - terraform
+     - packer
+    state: latest
+    update_cache: yes

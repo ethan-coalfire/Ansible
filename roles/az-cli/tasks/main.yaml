@@ -1,0 +1,36 @@
+# install dependancies
+- name: Install dependancies
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - ca-certificates
+     - curl
+     - gnupg
+     - lsb-release
+     - python3-pip
+     - acl
+    state: present
+    update_cache: yes
+
+# download microsoft key
+- name: download microsoft key
+  become: yes
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    dest: /etc/apt/keyrings/microsoft.asc
+
+# add microsoft repo with key
+- name: add microsoft repo with key
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.asc] https://packages.microsoft.com/repos/azure-cli/ {{ ansible_distribution_release }} main"
+    state: present
+
+# install tools
+- name: Install tools
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - azure-cli
+    state: latest
+    update_cache: yes

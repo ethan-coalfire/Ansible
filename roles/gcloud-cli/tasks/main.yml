@@ -1,0 +1,36 @@
+# install dependancies
+- name: Install dependancies
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - ca-certificates
+     - curl
+     - gnupg
+     - lsb-release
+     - python3-pip
+     - acl
+    state: present
+    update_cache: yes
+
+# download google key
+- name: download google key
+  become: yes
+  ansible.builtin.get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /etc/apt/keyrings/google-cloud.asc
+
+# add google repo with key
+- name: add google repo with key
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/google-cloud.asc] https://packages.cloud.google.com/apt cloud-sdk main"
+    state: present
+
+# install tools
+- name: Install tools
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - google-cloud-cli
+    state: latest
+    update_cache: yes

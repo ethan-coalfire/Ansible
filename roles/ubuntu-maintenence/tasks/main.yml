@@ -1,0 +1,36 @@
+- name: Set a hostname
+  become: yes
+  ansible.builtin.hostname:
+    name: "{{ server_hostname }}"
+
+# update packages
+- name: update packages
+  become: yes
+  ansible.builtin.apt:
+    name: '*'
+    state: present
+    update_cache: yes
+    only_upgrade: yes
+
+# autoremove packages
+- name: Remove dependencies that are no longer required
+  become: yes
+  ansible.builtin.apt:
+    autoremove: yes
+
+# allow ssh from only 192.168.2.0/24
+- name: Add OpenSSH rule
+  become: yes
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+    src: "{{ src_ip_cidr }}"
+  when: enable_ufw == true
+
+# enable ufw
+- name: Enable ufw
+  become: yes
+  community.general.ufw:
+    policy: deny
+    state: enabled
+  when: enable_ufw == true

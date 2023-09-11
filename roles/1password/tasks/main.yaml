@@ -1,0 +1,36 @@
+# install dependancies
+- name: Install dependancies
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - ca-certificates
+     - curl
+     - gnupg
+     - lsb-release
+     - python3-pip
+     - acl
+    state: present
+    update_cache: yes
+
+# download 1Password key
+- name: download 1Password key
+  become: yes
+  ansible.builtin.get_url:
+    url: https://downloads.1password.com/linux/keys/1password.asc
+    dest: /etc/apt/keyrings/1password.asc
+
+# add 1password repo with key
+- name: add 1Password repo with key
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/1password.asc] https://downloads.1password.com/linux/debian/amd64 stable main"
+    state: present
+
+# install tools
+- name: Install tools
+  become: yes
+  ansible.builtin.apt:
+    name: 
+     - 1password
+    state: latest
+    update_cache: yes
